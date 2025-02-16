@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"module": "Node16",
+		"module": "Node16", //Node16
 		"target": "ES2022",
 		"outDir": "out",
 		"lib": [
@@ -17,5 +17,5 @@
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
 	},
-	"exclude": ["vite.config.ts"]  // vite.config.tsをコンパイル対象から外す
+	"exclude": ["vite.config.ts", "node_modules"]  // vite.config.tsをコンパイル対象から外す
 }

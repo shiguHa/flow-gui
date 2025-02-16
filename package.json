@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [],
-  "main": "./out/extension.js",
+  "main": "./out/commands/extension.js",
   "contributes": {
     "commands": [
       {
@@ -21,11 +21,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && vite build",
-    "watch": "tsc -watch -p ./ && vite:watch",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
+    "vite:build": "vite build",
     "vite:watch": "vite build --watch"
   },
   "devDependencies": {
@@ -44,6 +45,7 @@
     "vite": "^6.1.0"
   },
   "dependencies": {
+    "@xyflow/react": "^12.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
