@@ -6,10 +6,6 @@ import {
     useReactFlow,
   } from "@xyflow/react";
   
-  interface ButtonEdgeProps extends EdgeProps {
-    onEdgeClick: (id: string) => void;
-  }
-
   export function ButtonEdge({
     id,
     sourceX,
@@ -36,20 +32,16 @@ import {
       <>
         <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
         <EdgeLabelRenderer>
-          <div
-            className="nodrag nopan pointer-events-auto absolute"
-            style={{
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            }}
-          >
             <button 
                 style={{
+                    position: 'absolute',
+                    transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
                     pointerEvents: 'all',
                 }}
+                className="nodrag nopan"
                 onClick={() => setEdges((edges) => edges.filter((edge) => edge.id !== id))}>
                 +
             </button>
-          </div>
         </EdgeLabelRenderer>
       </>
     );
