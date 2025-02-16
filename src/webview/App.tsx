@@ -35,6 +35,7 @@ export default function App() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
       >
+        <Background gap={12} size={1} />
       </ReactFlow>
     </div>
   );

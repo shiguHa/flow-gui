@@ -49,6 +49,7 @@ function getNonce() {
 
 function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
   const webviewUri = getUri(webview, extensionUri, ["out", "webview/main.js"]);
+  const webviewCssUri = getUri(webview, extensionUri, ["out", "webview/main.css"]);
   const nonce = getNonce();
 
   return `<!DOCTYPE html>
@@ -56,10 +57,10 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="${webviewCssUri}">
 	</head>
 	<body>
 	<div id="app"></div>
 	<script type="module" nonce="${nonce}" src="${webviewUri}"></script> 
 	</html>`;
 }
-
