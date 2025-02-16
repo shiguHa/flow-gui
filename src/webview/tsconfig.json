@@ -17,5 +17,4 @@
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
 	},
-	"exclude": ["vite.config.ts", "node_modules"]  // vite.config.tsをコンパイル対象から外す
 }

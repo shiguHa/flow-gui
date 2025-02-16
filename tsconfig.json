@@ -3,5 +3,5 @@
 		{ "path": "./src/commands/tsconfig.json" },
 		{ "path": "./src/webview/tsconfig.json" }
 	  ],
-	"exclude": ["vite.config.ts", "node_modules"]  // vite.config.tsをコンパイル対象から外す
+	"exclude": ["vite.config.ts"]  // vite.config.tsをコンパイル対象から外す
 }
