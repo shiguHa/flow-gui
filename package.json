@@ -21,11 +21,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "npm run commands:build && npm run vite:build",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test",
+    "commands:build": "tsc -p ./src/commands",
     "vite:build": "vite build",
     "vite:watch": "vite build --watch"
   },
