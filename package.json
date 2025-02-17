@@ -2,6 +2,7 @@
   "name": "flow-gui",
   "displayName": "flow-gui",
   "description": "",
+  "publisher": "h",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.97.0"
