@@ -37,7 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
               console.info('updateEditorContent');
               const { newText } = message;
               const edit = new vscode.WorkspaceEdit();
-              const document = vscode.window.activeTextEditor?.document;
+              // const document = vscode.window.activeTextEditor?.document;
+              const document = getFirstTextEditor()?.document;
               if (document) {
                 const fullRange = new vscode.Range(
                   document.positionAt(0),
@@ -95,4 +96,9 @@ function getWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri) {
 	<div id="app"></div>
 	<script type="module" nonce="${nonce}" src="${webviewUri}"></script> 
 	</html>`;
+}
+
+function getFirstTextEditor(): vscode.TextEditor | undefined {
+  const editors = vscode.window.visibleTextEditors;
+  return editors.find(editor => editor.document.languageId === 'plaintext');
 }
