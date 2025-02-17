@@ -4,12 +4,17 @@ import {
     EdgeProps,
     getBezierPath,
     useReactFlow,
+    useEdges,
+    useNodes,
+    getConnectedEdges
   } from "@xyflow/react";
   
   export function ButtonEdge({
     id,
+    source,
     sourceX,
     sourceY,
+    target,
     targetX,
     targetY,
     sourcePosition,
@@ -17,7 +22,9 @@ import {
     style = {},
     markerEnd,
   }: EdgeProps) {
-    const { setEdges } = useReactFlow();
+    const { setNodes, setEdges, getNode } = useReactFlow();
+    const edges = useEdges();
+    const nodes = useNodes();
     const [edgePath, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
@@ -27,6 +34,32 @@ import {
       targetPosition,
     });
    
+    const onEdgeClick = () => {
+      const sourceNode = getNode(source);
+      const targetNode = getNode(target);
+      if (sourceNode && targetNode) {
+        const newNodeId = `node-${Date.now()}`;
+        const newNode = {
+          id: newNodeId,
+          position: {
+            x: (sourceNode.position.x + targetNode.position.x) / 2,
+            y: (sourceNode.position.y + targetNode.position.y) / 2,
+          },
+          data: { label: `新しいノード` },
+          type: 'default',
+        };
+        setNodes((nds) => nds.concat(newNode));
+        setEdges((eds) =>
+          eds
+            .filter((edge) => edge.id !== id)
+            .concat([
+              { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId,type: "buttonedge" },
+              { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id,type: "buttonedge" },
+            ])
+        );
+      }
+    };
+  
 
     return (
       <>
@@ -39,7 +72,7 @@ import {
                     pointerEvents: 'all',
                 }}
                 className="nodrag nopan"
-                onClick={() => setEdges((edges) => edges.filter((edge) => edge.id !== id))}>
+                onClick={onEdgeClick}>
                 +
             </button>
         </EdgeLabelRenderer>
