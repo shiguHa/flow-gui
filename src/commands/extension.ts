@@ -7,7 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
       const panel = vscode.window.createWebviewPanel(
         "react",
         "React Sample",
-        vscode.ViewColumn.One,
+        vscode.ViewColumn.Two,
         {
           localResourceRoots: [
             vscode.Uri.joinPath(context.extensionUri, "out"),
@@ -21,6 +21,38 @@ export function activate(context: vscode.ExtensionContext) {
         panel.webview,
         context.extensionUri
       );
+
+      // Handle messages from the webview
+      panel.webview.onDidReceiveMessage(
+        message => {
+          switch (message.command) {
+            case "getEditorContent":
+              const editor = vscode.window.activeTextEditor;
+              if (editor) {
+                const text = editor.document.getText();
+                panel.webview.postMessage({ command: "editorContent", text });
+              }
+              return;
+            case "updateEditorContent":
+              console.info('updateEditorContent');
+              const { newText } = message;
+              const edit = new vscode.WorkspaceEdit();
+              const document = vscode.window.activeTextEditor?.document;
+              if (document) {
+                const fullRange = new vscode.Range(
+                  document.positionAt(0),
+                  document.positionAt(document.getText().length)
+                );
+                edit.replace(document.uri, fullRange, newText);
+                vscode.workspace.applyEdit(edit);
+              }
+              return;
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
+
     })
   );
 }

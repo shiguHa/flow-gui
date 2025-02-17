@@ -9,8 +9,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-  ],
+  "activationEvents": [],
   "main": "./out/commands/extension.js",
   "contributes": {
     "commands": [
@@ -56,6 +55,7 @@
     "vite": "^6.1.0"
   },
   "dependencies": {
+    "@types/vscode-webview": "^1.57.5",
     "@xyflow/react": "^12.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

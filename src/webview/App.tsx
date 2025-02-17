@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -11,7 +11,13 @@ import {
  
 import '@xyflow/react/dist/style.css';
 import { ButtonEdge } from './components/ButtonEdge';
- 
+
+
+// interface vscode {
+//   postMessage(message: any): void;
+// }
+const vscode = acquireVsCodeApi();
+
 const initialNodes = [
   { id: "1", position: { x: 250, y: 0 }, data: { label: "開始" }, type: "default" },
   { id: "2", position: { x: 250, y: 100 }, data: { label: "処理 1" }, type: "default" },
@@ -32,11 +38,27 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
  
+
+  const updateEditorContent = useCallback(() => {
+    const newText = generateFlowText(nodes, edges);
+    vscode.postMessage({ command: 'updateEditorContent', newText });
+  }, [nodes, edges]);
+
+  function generateFlowText(nodes: any[], edges: any[]) {
+    // ノードとエッジの情報からテキストを生成するロジックを実装
+    return JSON.stringify({ nodes, edges }, null, 2);
+  }
+
+  useEffect(() => {
+    updateEditorContent();
+  }, [nodes, edges, updateEditorContent]);
+
   const onConnect = useCallback(
     (params:any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
- 
+
+  
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow
