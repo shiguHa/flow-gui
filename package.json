@@ -1,6 +1,6 @@
 {
-  "name": "lean-react-vite",
-  "displayName": "lean-react-vite",
+  "name": "flow-gui",
+  "displayName": "flow-gui",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -9,15 +9,25 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+  ],
   "main": "./out/commands/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "lean-react-vite.helloWorld",
-        "title": "Hello World"
+        "command": "flow-gui.showWebView",
+        "title": "showFlowGUI"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "flow-gui.showWebView",
+          "when": "resourceLangId == 'plaintext'",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

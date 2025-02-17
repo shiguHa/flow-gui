@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
-    vscode.commands.registerCommand("lean-react-vite.helloWorld", () => {
+    vscode.commands.registerCommand("flow-gui.showWebView", () => {
       // Create and show panel
       const panel = vscode.window.createWebviewPanel(
         "react",

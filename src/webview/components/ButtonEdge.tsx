@@ -4,9 +4,6 @@ import {
     EdgeProps,
     getBezierPath,
     useReactFlow,
-    useEdges,
-    useNodes,
-    getConnectedEdges
   } from "@xyflow/react";
   
   export function ButtonEdge({
@@ -23,8 +20,6 @@ import {
     markerEnd,
   }: EdgeProps) {
     const { setNodes, setEdges, getNode } = useReactFlow();
-    const edges = useEdges();
-    const nodes = useNodes();
     const [edgePath, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
