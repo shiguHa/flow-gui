@@ -1,3 +1,4 @@
+import dagre from 'dagre';
 import React, { useCallback, useEffect } from 'react';
 import {
   ReactFlow,
@@ -7,15 +8,15 @@ import {
   useNodesState,
   useEdgesState,
   addEdge,
+  Node,
+  Edge,
+  Position,
 } from '@xyflow/react';
  
 import '@xyflow/react/dist/style.css';
-import { ButtonEdge } from './components/ButtonEdge';
+import { ButtonEdgeWithAddNode } from './components/ButtonEdgeWithAddNode';
+import { getLayoutedElements } from './utils/layout';
 
-
-// interface vscode {
-//   postMessage(message: any): void;
-// }
 const vscode = acquireVsCodeApi();
 
 const initialNodes = [
@@ -30,13 +31,16 @@ const initialEdges = [
   { id: "e3-4", source: "3", target: "4" , type: "buttonedge"},
 ];
 
+const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
+
+
 const edgeTypes = {
-  buttonedge: ButtonEdge,
+  buttonedge: ButtonEdgeWithAddNode,
 };
  
 export default function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(layoutedEdges);
  
 
   const updateEditorContent = useCallback(() => {

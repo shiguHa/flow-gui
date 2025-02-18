@@ -5,8 +5,9 @@ import {
     getBezierPath,
     useReactFlow,
   } from "@xyflow/react";
+import { getLayoutedElements } from "../utils/layout";
   
-  export function ButtonEdge({
+  export function ButtonEdgeWithAddNode({
     id,
     source,
     sourceX,
@@ -19,7 +20,7 @@ import {
     style = {},
     markerEnd,
   }: EdgeProps) {
-    const { setNodes, setEdges, getNode } = useReactFlow();
+    const { setNodes, setEdges, getNode, getNodes, getEdges } = useReactFlow();
     const [edgePath, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
@@ -43,18 +44,20 @@ import {
           data: { label: `新しいノード` },
           type: 'default',
         };
-        setNodes((nds) => nds.concat(newNode));
-        setEdges((eds) =>
-          eds
-            .filter((edge) => edge.id !== id)
-            .concat([
-              { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId,type: "buttonedge" },
-              { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id,type: "buttonedge" },
-            ])
-        );
+  
+        const updatedNodes = [...getNodes(), newNode];
+        const updatedEdges = [
+          ...getEdges().filter((edge) => edge.id !== id),
+          { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
+          { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
+        ];
+  
+        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
+  
+        setNodes(layoutedNodes);
+        setEdges(layoutedEdges);
       }
     };
-  
 
     return (
       <>
