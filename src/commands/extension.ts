@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
               }
               return;
             case "updateEditorContent":
-              console.info('updateEditorContent');
+              // console.info('updateEditorContent');
               const { newText } = message;
               const edit = new vscode.WorkspaceEdit();
               // const document = vscode.window.activeTextEditor?.document;

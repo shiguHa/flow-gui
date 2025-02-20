@@ -17,29 +17,22 @@ import '@xyflow/react/dist/style.css';
 import { ButtonEdgeWithAddNode } from './components/ButtonEdgeWithAddNode';
 import { getLayoutedElements } from './utils/layout';
 import { GroupNode } from './components/GroupNode';
+import { IFGroupNode } from './components/IFGroupNode';
 
 const vscode = acquireVsCodeApi();
 
 const initialNodes: Node[] = [
-  { id: "1", position: { x: 250, y: 0 }, data: { label: "開始" }, type: "default" },
-  { id: "2", position: { x: 250, y: 100 }, data: { label: "処理 1" }, type: "default" },
-  { id: "3", position: { x: 250, y: 200 }, data: { label: "処理 2" }, type: "default" },
-  { id: "4", position: { x: 250, y: 400 }, data: { label: "IF" } , type: "groupNode",
-    style:{
-      backgroundColor: 'rgba(255, 0, 255, 0.2)',
-      height: 200,
-      width: 270,
-    }
+  { id: "1", position: { x: 0, y: 0 }, data: { label: "開始" }, type: "default" },
+  { id: "2", position: { x: 0, y: 100 }, data: { label: "処理 1" }, type: "default" },
+  { id: "3", position: { x: 0, y: 200 }, data: { label: "処理 2" }, type: "default" },
+  { id: "4", position: { x: 0, y: 400 }, data: { label: "IF" } , type: "ifGroupNode",
+    style: { backgroundColor: 'rgba(255, 0, 255, 0.2)', height: 300, width: 300 },
   },
-  { id: "5", position: { x: 250, y: 450 }, data: { label: "IF TRUE" }, parentId: "4" },
-  { id: "6", position: { x: 250, y: 500 }, data: { label: "IF FALSE" }, parentId: "4" },
 ];
 const initialEdges = [
   { id: "e1-2", source: "1", target: "2", type: "buttonedge" },
   { id: "e2-3", source: "2", target: "3" , type: "buttonedge"},
   { id: "e3-4", source: "3", target: "4" , type: "buttonedge"},
-  { id: "e4-5", source: "4", target: "5", type: "buttonedge" }, 
-  { id: "e4-6", source: "4", target: "6", type: "buttonedge" }, 
 ];
 
 const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
@@ -51,6 +44,7 @@ const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initi
 //   }), []);
 const nodeTypes = {
   groupNode: GroupNode,
+  ifGroupNode: IFGroupNode,
 };
 const edgeTypes = {
   buttonedge: ButtonEdgeWithAddNode,
