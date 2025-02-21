@@ -12,24 +12,24 @@ export function IFGroupNode(props: NodeProps<GroupNodeType>) {
             ...nodes,
             {
             id: `${id}-true`,
-            position: { x: 10, y: 10 },
+            position: { x: 10, y: 50 },
             data: { label: "IF TRUE" },
             parentId: id,
             extent: "parent",
             type: "output",
-            draggable: false,
+            draggable: true,
             },
             {
             id: `${id}-false`,
-            position: { x: 200, y: 10 },
+            position: { x: 200, y: 50 },
             data: { label: "IF FALSE" },
             parentId: id,
             extent: "parent",
             type: "output",
-            draggable: false,
+            draggable: true,
             },
         ]);
     }, [id]);
 
-    return <GroupNode {...props} />;
+    return <GroupNode {...props}/>;
 }

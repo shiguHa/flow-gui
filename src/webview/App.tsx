@@ -26,7 +26,6 @@ const initialNodes: Node[] = [
   { id: "2", position: { x: 0, y: 100 }, data: { label: "処理 1" }, type: "default" },
   { id: "3", position: { x: 0, y: 200 }, data: { label: "処理 2" }, type: "default" },
   { id: "4", position: { x: 0, y: 400 }, data: { label: "IF" } , type: "ifGroupNode",
-    style: { backgroundColor: 'rgba(255, 0, 255, 0.2)', height: 300, width: 300 },
   },
 ];
 const initialEdges = [
