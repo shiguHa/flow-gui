@@ -19,7 +19,7 @@ import { getLayoutedElements } from './utils/layout';
 import { GroupNode } from './components/GroupNode';
 import { IFGroupNode } from './components/IFGroupNode';
 
-const vscode = acquireVsCodeApi();
+// const vscode = acquireVsCodeApi();
 
 const initialNodes: Node[] = [
   { id: "1", position: { x: 0, y: 0 }, data: { label: "開始" }, type: "default" },
@@ -56,7 +56,7 @@ export default function App() {
 
   const updateEditorContent = useCallback(() => {
     const newText = generateFlowText(nodes, edges);
-    vscode.postMessage({ command: 'updateEditorContent', newText });
+    // vscode.postMessage({ command: 'updateEditorContent', newText });
   }, [nodes, edges]);
 
   function generateFlowText(nodes: any[], edges: any[]) {

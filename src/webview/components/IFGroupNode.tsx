@@ -29,7 +29,7 @@ export function IFGroupNode(props: NodeProps<GroupNodeType>) {
             draggable: true,
             },
         ]);
-    }, [id]);
+    }, []);
 
     return <GroupNode {...props}/>;
 }
