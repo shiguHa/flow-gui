@@ -16,6 +16,7 @@ const selector = (state: FlowStoreType) => ({
   getNodeById:state.getNodeById,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
+  addNode2: state.addNode,
 });
 
 export function ButtonEdgeWithAddNode({
@@ -31,7 +32,7 @@ export function ButtonEdgeWithAddNode({
   style = {},
   markerEnd,
 }: EdgeProps) {
-  const { setNodes, setEdges, getNodeById, nodes, edges } = useFlowStore(useShallow(selector));
+  const { setNodes, setEdges, getNodeById, nodes, edges, addNode2 } = useFlowStore(useShallow(selector));
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -59,9 +60,10 @@ export function ButtonEdgeWithAddNode({
       data: { label: type === 'ifNode' ? 'IF 条件' : '新しいノード' },
       type: type,
     };
-  
-    let updatedNodes = [...nodes, newNode];
-    let updatedEdges = [
+    
+    // addNode2(newNode);
+    const updatedNodes = [...nodes, newNode];
+    const updatedEdges = [
       ...edges.filter((edge) => edge.id !== id),
       { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
       { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
@@ -73,9 +75,6 @@ export function ButtonEdgeWithAddNode({
     setEdges(layoutedEdges);
     setShowOptions(false);
   }
-  useEffect(() => {
-    console.log("Nodes updated:", nodes);
-  }, [nodes]);
   
   const onEdgeClick = () => {
     setShowOptions(true);

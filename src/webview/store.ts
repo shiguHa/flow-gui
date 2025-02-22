@@ -44,8 +44,11 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
         console.log("edges: ");
         console.log(get().edges);
     },
-    addNode: (node) => {
-        set({ nodes: [...get().nodes, node] });
+    addNode: (newNode) => {
+        const updatedNodes = [...get().nodes, newNode];
+        console.log(updatedNodes);
+        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, get().edges);
+        set({ nodes: layoutedNodes });
     },
     setNodes: (nodes) => {
         set({ nodes });
