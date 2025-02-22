@@ -6,6 +6,14 @@ interface LayoutedElements {
   edges: Edge[];
 }
 
+// const selector = (state: FlowStoreType) => ({
+//   nodes: state.nodes,
+//   edges: state.edges,
+//   getNodeById:state.getNodeById,
+//   setNodes: state.setNodes,
+//   setEdges: state.setEdges,
+// });
+
 export function getLayoutedElements(nodes: Node[], edges: Edge[]): LayoutedElements {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));

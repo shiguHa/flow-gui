@@ -3,11 +3,21 @@ import {
     EdgeLabelRenderer,
     EdgeProps,
     getBezierPath,
-    useReactFlow,
   } from "@xyflow/react";
 import { getLayoutedElements } from "../utils/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FlowStoreType, useFlowStore } from "../store";
+import { useShallow } from "zustand/shallow";
+import { v7 as uuidv7 } from 'uuid';
   
+const selector = (state: FlowStoreType) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  getNodeById:state.getNodeById,
+  setNodes: state.setNodes,
+  setEdges: state.setEdges,
+});
+
 export function ButtonEdgeWithAddNode({
   id,
   source,
@@ -21,7 +31,7 @@ export function ButtonEdgeWithAddNode({
   style = {},
   markerEnd,
 }: EdgeProps) {
-  const { setNodes, setEdges, getNode, getNodes, getEdges } = useReactFlow();
+  const { setNodes, setEdges, getNodeById, nodes, edges } = useFlowStore(useShallow(selector));
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -33,63 +43,29 @@ export function ButtonEdgeWithAddNode({
   const [showOptions, setShowOptions] = useState(false);
 
   const addNode = (type: string) => {
-    const sourceNode = getNode(source);
-    const targetNode = getNode(target);
+    const sourceNode = getNodeById(source);
+    const targetNode = getNodeById(target);
     if (!sourceNode || !targetNode) {
       return;
     }
 
-    const newNodeId = `node-${Date.now()}`;
+    const newNodeId = uuidv7();
     const newNode = {
       id: newNodeId,
       position: {
-        x: (sourceNode.position.x + targetNode.position.x) / 2,
-        y: (sourceNode.position.y + targetNode.position.y) / 2,
+        x: sourceNode.position.x ,
+        y: sourceNode.position.y,
       },
       data: { label: type === 'ifNode' ? 'IF 条件' : '新しいノード' },
       type: type,
     };
-
-    let updatedNodes = [...getNodes(), newNode];
+  
+    let updatedNodes = [...nodes, newNode];
     let updatedEdges = [
-      ...getEdges().filter((edge) => edge.id !== id),
+      ...edges.filter((edge) => edge.id !== id),
       { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
       { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
     ];
-
-
-
-    if (type === 'ifNode') {
-      const trueNodeId = `node-${Date.now()}-true`;
-      const falseNodeId = `node-${Date.now()}-false`;
-
-      const trueNode = {
-        id: trueNodeId,
-        position: {
-          x: newNode.position.x + 100,
-          y: newNode.position.y - 50,
-        },
-        data: { label: 'IF TRUE' },
-        type: 'ifNode',
-      };
-
-      const falseNode = {
-        id: falseNodeId,
-        position: {
-          x: newNode.position.x + 100,
-          y: newNode.position.y + 50,
-        },
-        data: { label: 'IF FALSE' },
-        type: 'ifNode',
-      };
-
-      updatedNodes = [...updatedNodes, trueNode, falseNode];
-      updatedEdges = [
-        ...updatedEdges,
-        { id: `e-${newNodeId}-${trueNodeId}`, source: newNodeId, target: trueNodeId, type: "buttonedge" },
-        { id: `e-${newNodeId}-${falseNodeId}`, source: newNodeId, target: falseNodeId, type: "buttonedge" },
-      ];
-    }
 
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
 
@@ -97,7 +73,9 @@ export function ButtonEdgeWithAddNode({
     setEdges(layoutedEdges);
     setShowOptions(false);
   }
-
+  useEffect(() => {
+    console.log("Nodes updated:", nodes);
+  }, [nodes]);
   
   const onEdgeClick = () => {
     setShowOptions(true);
@@ -129,8 +107,8 @@ export function ButtonEdgeWithAddNode({
               zIndex: 10,
             }}
           >
-            <button onClick={() => addNode('default')}>通常ノード</button>
-            <button onClick={() => addNode('ifNode')}>IFノード</button>
+            <button onClick={() => addNode("default")}>通常ノード</button>
+            <button onClick={() => addNode("ifGroupNode")}>IFノード</button>
           </div>
         )}
       </EdgeLabelRenderer>

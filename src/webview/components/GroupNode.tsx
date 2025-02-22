@@ -1,31 +1,29 @@
-import { Handle, Node, NodeProps, Position, ReactFlowState, useInternalNode, useStoreApi, useNodesState, useReactFlow, useStore, NodeChange, OnNodesChange, applyNodeChanges } from "@xyflow/react";
+import {  useEffect,useState } from "react";
+import { Handle, NodeProps, Position, useInternalNode } from "@xyflow/react";
 import { GroupNodeType } from "../types/GroupNodeType";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { FlowStoreType, useFlowStore } from "../store";
+import { useShallow } from "zustand/shallow";
 // TODO: 途中でnode追加したときはHiddeされない気がする
 
+const selector = (state: FlowStoreType) => ({
+  nodes: state.nodes,
+  setHiddenNodesByParentId: state.setHiddenNodesByParentId,
+});
 
-export function GroupNode({ id, data, selected }: NodeProps<GroupNodeType>) {
+export function GroupNode({ id, data }: NodeProps<GroupNodeType>) {
   const [expanded, setExpanded] = useState(false);
-  const { setNodes, getNodes } = useReactFlow();
   const internalNode = useInternalNode(id);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
+  const {nodes,setHiddenNodesByParentId} = useFlowStore(useShallow(selector));
+  
   const handleToggle = () => {
     setExpanded(!expanded);
-    setNodes(nodes =>
-      nodes.map(node => {
-        if (node.parentId === id) {
-          return { ...node, hidden: expanded };
-        }
-        return node;
-      })
-    );
+    setHiddenNodesByParentId(id, expanded);
   };
 
   useEffect(() => {
-    const nodes = getNodes();
     const childNodes = nodes.filter(node => node.parentId === id);
 
     if (childNodes.length > 0) {
