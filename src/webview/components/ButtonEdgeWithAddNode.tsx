@@ -3,6 +3,7 @@ import {
     EdgeLabelRenderer,
     EdgeProps,
     getBezierPath,
+    useReactFlow,
   } from "@xyflow/react";
 import { getLayoutedElements } from "../utils/layout";
 import { useEffect, useState } from "react";
@@ -17,6 +18,7 @@ const selector = (state: FlowStoreType) => ({
   setNodes: state.setNodes,
   setEdges: state.setEdges,
   addNode2: state.addNode,
+  getNodes: state.getNodes,
 });
 
 export function ButtonEdgeWithAddNode({
@@ -32,7 +34,8 @@ export function ButtonEdgeWithAddNode({
   style = {},
   markerEnd,
 }: EdgeProps) {
-  const { setNodes, setEdges, getNodeById, nodes, edges, addNode2 } = useFlowStore(useShallow(selector));
+  const {   getNodeById, addNode2 } = useFlowStore(useShallow(selector));
+  const {getNodes,setNodes} = useReactFlow();
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -54,25 +57,28 @@ export function ButtonEdgeWithAddNode({
     const newNode = {
       id: newNodeId,
       position: {
-        x: sourceNode.position.x ,
-        y: sourceNode.position.y,
+        x: 500,
+        y:500 ,
       },
       data: { label: type === 'ifNode' ? 'IF 条件' : '新しいノード' },
       type: type,
     };
     
-    // addNode2(newNode);
-    const updatedNodes = [...nodes, newNode];
-    const updatedEdges = [
-      ...edges.filter((edge) => edge.id !== id),
-      { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
-      { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
-    ];
+    addNode2(newNode,id,source,target);
+    // const currentNodes = getNodes();
+    // const updatedNodes = [...currentNodes, newNode];
+    // // const updatedNodes = [...useFlowStore.getState().nodes, newNode];
 
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
+    // const updatedEdges = [
+    //   ...edges.filter((edge) => edge.id !== id),
+    //   { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
+    //   { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
+    // ];
 
-    setNodes(layoutedNodes);
-    setEdges(layoutedEdges);
+    // const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
+
+    // setNodes(layoutedNodes);
+    // setEdges(layoutedEdges);
     setShowOptions(false);
   }
   
@@ -90,7 +96,6 @@ export function ButtonEdgeWithAddNode({
                   transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
                   pointerEvents: 'all',
               }}
-              className="nodrag nopan"
               onClick={onEdgeClick}>
               +
           </button>

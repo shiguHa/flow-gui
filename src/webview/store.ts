@@ -20,11 +20,12 @@ export type FlowStoreType = {
     maxZIndex: number;
     minZIndex: number;
     check: () => void;
-    addNode: (node: Node) => void;
+    addNode: (node: Node, edgeId:string, sourceId:string, targetId:string) => void;
     setNodes: (nodes: Node[]) => void;
     setEdges: (edges: Edge[]) => void;
     deleteNode: (id: string) => void;
     deleteEdge: (id: string) => void;
+    getNodes: () => Node[];
     getNodeById: (id: string) => Node | undefined;
     setHiddenNodesByParentId: (parentId: string, hidden: boolean) => void;
     onNodesChange: OnNodesChange<Node>;
@@ -44,11 +45,16 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
         console.log("edges: ");
         console.log(get().edges);
     },
-    addNode: (newNode) => {
-        const updatedNodes = [...get().nodes, newNode];
-        console.log(updatedNodes);
-        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, get().edges);
-        set({ nodes: layoutedNodes });
+    addNode: (newNode, edgeId, sourceNodeId, targetNodeId) => { // TODO:たぶんEdgeIdだけで十分なので修正する
+        const updatedNodes = [...get().nodes.map(node => ({ ...node })), newNode];
+        const updatedEdges = [
+            ...get().edges.filter((edge) => edge.id !== edgeId),
+            { id: `e-${sourceNodeId}-${newNode.id}`, source: sourceNodeId, target: newNode.id, type: "buttonedge" },
+            { id: `e-${newNode.id}-${targetNodeId}`, source: newNode.id, target: targetNodeId, type: "buttonedge" },
+          ];
+        const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
+        console.log('addNode', layoutedNodes);
+        set({ nodes: layoutedNodes, edges: layoutedEdges });
     },
     setNodes: (nodes) => {
         set({ nodes });
@@ -61,6 +67,9 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
     },
     deleteEdge: (id) => {
         set({ edges: get().edges.filter((ed) => ed.id !== id) });
+    },
+    getNodes: () => {
+        return get().nodes;
     },
     getNodeById: (id) => {
         return get().nodes.find((nd) => nd.id === id);
@@ -76,6 +85,7 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
         });
     },
     onNodesChange: (changes) => {
+        console.log("onNodesChange", changes);
         set({
             nodes: applyNodeChanges(changes, get().nodes),
         });
