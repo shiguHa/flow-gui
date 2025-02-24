@@ -1,6 +1,6 @@
 import {  useEffect,useState } from "react";
 import { Handle, NodeProps, Position, useInternalNode } from "@xyflow/react";
-import { GroupNodeType } from "../types/GroupNodeType";
+import { GroupNodeProps } from "../types/GroupNodeType";
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { FlowStoreType, useFlowStore } from "../store";
@@ -12,7 +12,7 @@ const selector = (state: FlowStoreType) => ({
   setHiddenNodesByParentId: state.setHiddenNodesByParentId,
 });
 
-export function GroupNode({ id, data }: NodeProps<GroupNodeType>) {
+export function GroupNode({ id, data }: NodeProps<GroupNodeProps>) {
   const [expanded, setExpanded] = useState(false);
   const internalNode = useInternalNode(id);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });

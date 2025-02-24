@@ -1,5 +1,9 @@
 import { Node, } from "@xyflow/react";
 
-export type GroupNodeType = Node<{
+export type ActionNodeProps = Node<{
+    label: string;
+}>;
+
+export type GroupNodeProps = Node<{
     label: string;
 }>;

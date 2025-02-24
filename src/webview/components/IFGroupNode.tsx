@@ -1,9 +1,9 @@
 import { NodeProps, useReactFlow } from "@xyflow/react";
-import { GroupNodeType } from "../types/GroupNodeType";
+import { GroupNodeProps } from "../types/GroupNodeType";
 import { GroupNode } from "./GroupNode";
 import { useEffect } from "react";
 
-export function IFGroupNode(props: NodeProps<GroupNodeType>) {
+export function IFGroupNode(props: NodeProps<GroupNodeProps>) {
     const { id, data } = props;
     const { setNodes, getNodes } = useReactFlow();
   
@@ -17,7 +17,7 @@ export function IFGroupNode(props: NodeProps<GroupNodeType>) {
             parentId: id,
             extent: "parent",
             type: "input",
-            draggable: true,
+            draggable: false,
             },
             {
             id: `${id}-false`,
@@ -26,7 +26,7 @@ export function IFGroupNode(props: NodeProps<GroupNodeType>) {
             parentId: id,
             extent: "parent",
             type: "input",
-            draggable: true,
+            draggable: false,
             },
         ]);
     }, []);

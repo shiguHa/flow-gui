@@ -15,10 +15,12 @@ import { FlowStoreType, useFlowStore } from './store';
 import { useShallow } from 'zustand/shallow';
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import ActionNode from './components/ActionNode';
 
 // const vscode = acquireVsCodeApi();
 
 const nodeTypes = {
+  actionNode: ActionNode,
   groupNode: GroupNode,
   ifGroupNode: IFGroupNode,
 };
