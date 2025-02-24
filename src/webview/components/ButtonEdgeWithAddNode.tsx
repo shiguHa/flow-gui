@@ -1,18 +1,19 @@
 import {
-    BaseEdge,
-    EdgeLabelRenderer,
-    EdgeProps,
-    getBezierPath,
-  } from "@xyflow/react";
+  BaseEdge,
+  EdgeLabelRenderer,
+  EdgeProps,
+  getBezierPath,
+} from "@xyflow/react";
 import { useEffect, useState } from "react";
 import { FlowStoreType, useFlowStore } from "../store";
 import { useShallow } from "zustand/shallow";
 import { v7 as uuidv7 } from 'uuid';
-  
+import { useDroppable } from "@dnd-kit/core";
+
 const selector = (state: FlowStoreType) => ({
   nodes: state.nodes,
   edges: state.edges,
-  getNodeById:state.getNodeById,
+  getNodeById: state.getNodeById,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
   addNode: state.addNode,
@@ -28,10 +29,9 @@ export function ButtonEdgeWithAddNode({
   targetY,
   sourcePosition,
   targetPosition,
-  style = {},
   markerEnd,
 }: EdgeProps) {
-  const {   getNodeById, addNode } = useFlowStore(useShallow(selector));
+  const { getNodeById, addNode } = useFlowStore(useShallow(selector));
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -41,6 +41,9 @@ export function ButtonEdgeWithAddNode({
     targetPosition,
   });
   const [showOptions, setShowOptions] = useState(false);
+  const { isOver, setNodeRef } = useDroppable({
+    id: id,
+  });
 
   const addNodeHandle = (type: string) => {
     const sourceNode = getNodeById(source);
@@ -54,34 +57,49 @@ export function ButtonEdgeWithAddNode({
       id: newNodeId,
       position: {
         x: 500,
-        y:500 ,
+        y: 500,
       },
       data: { label: type === 'ifNode' ? 'IF 条件' : '新しいノード' },
       type: type,
     };
-    
-    addNode(newNode,id,source,target);
+
+    addNode(newNode, id, source, target);
     setShowOptions(false);
   }
-  
+
   const onEdgeClick = () => {
     setShowOptions(true);
   };
+  const style = {
+    background: isOver ? 'red' : 'blue',
+    border: '1px solid black',
+  };
 
+   // transformがあるとisOverがtrueにならない??
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
+      <BaseEdge path={edgePath} markerEnd={markerEnd} />
       <EdgeLabelRenderer>
-          <button 
-              style={{
-                  position: 'absolute',
-                  transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-                  pointerEvents: 'all',
-              }}
-              onClick={onEdgeClick}>
-              +
+       
+        <div ref={setNodeRef} style={{
+
+          position: 'absolute',
+          background: isOver ? 'red' : 'blue',
+          transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+        }}> 
+          <button
+            
+            // style={{
+            //   position: 'absolute',
+            //   transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            //   pointerEvents: 'all',
+            // }}
+            onClick={onEdgeClick}>
+            +
           </button>
-          {showOptions && (
+        </div>
+
+        {showOptions && (
           <div
             style={{
               position: 'absolute',

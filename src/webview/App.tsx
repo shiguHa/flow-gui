@@ -14,7 +14,6 @@ import { IFGroupNode } from './components/IFGroupNode';
 import { FlowStoreType, useFlowStore } from './store';
 import { useShallow } from 'zustand/shallow';
 import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import ActionNode from './components/ActionNode';
 
 // const vscode = acquireVsCodeApi();
@@ -63,9 +62,6 @@ export default function App() {
   // TODO:後からdnd-kit関連は別のコンポーネントに移す
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
   );
 
   const handleDragStart = (event: any) => {
@@ -75,45 +71,40 @@ export default function App() {
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     if (active.id !== over.id) {
-      const oldIndex = nodes.findIndex(node => node.id === active.id);
-      const newIndex = nodes.findIndex(node => node.id === over.id);
-      const newNodes = arrayMove(nodes, oldIndex, newIndex);
-      setNodes(newNodes);
+
     }
   };
 
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <SortableContext items={nodes.map(node => node.id)}>
-        <div style={{ width: '100vw', height: '100vh' }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgeChange}
-            draggable={false}
-            edgesFocusable={false}
-            elevateEdgesOnSelect={false}
-            nodesConnectable={false}
-            nodesDraggable={false}
-            nodesFocusable={false}
-            selectNodesOnDrag={true}
-            selectionMode={SelectionMode.Partial}
-            elementsSelectable={true}
-            selectionOnDrag={true}
-            panOnScroll={true}
-            panOnScrollMode={PanOnScrollMode.Free}
-            fitView={false}
-            panOnDrag={[1, 2]}
-          >
-            <Controls showInteractive={false} />
-            <MiniMap />
-          </ReactFlow>
-        </div>
-      </SortableContext>
+      <div style={{ width: '100vw', height: '100vh' }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgeChange}
+          draggable={false}
+          edgesFocusable={false}
+          elevateEdgesOnSelect={false}
+          nodesConnectable={false}
+          nodesDraggable={false}
+          nodesFocusable={false}
+          selectNodesOnDrag={true}
+          selectionMode={SelectionMode.Partial}
+          elementsSelectable={true}
+          selectionOnDrag={true}
+          panOnScroll={true}
+          panOnScrollMode={PanOnScrollMode.Free}
+          fitView={false}
+          panOnDrag={[1, 2]}
+        >
+          <Controls showInteractive={false} />
+          <MiniMap />
+        </ReactFlow>
+      </div>
     </DndContext>
   );
 }
