@@ -6,13 +6,15 @@ import {
   SelectionMode,
   PanOnScrollMode,
 } from '@xyflow/react';
- 
+
 import '@xyflow/react/dist/style.css';
 import { ButtonEdgeWithAddNode } from './components/ButtonEdgeWithAddNode';
 import { GroupNode } from './components/GroupNode';
 import { IFGroupNode } from './components/IFGroupNode';
 import { FlowStoreType, useFlowStore } from './store';
 import { useShallow } from 'zustand/shallow';
+import { DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
 // const vscode = acquireVsCodeApi();
 
@@ -23,12 +25,13 @@ const nodeTypes = {
 const edgeTypes = {
   buttonedge: ButtonEdgeWithAddNode,
 };
- 
+
 const selector = (state: FlowStoreType) => ({
   nodes: state.nodes,
   edges: state.edges,
   onNodesChange: state.onNodesChange,
   onEdgeChange: state.onEdgesChange,
+  setNodes: state.setNodes,
 });
 
 
@@ -38,8 +41,9 @@ export default function App() {
     edges,
     onNodesChange,
     onEdgeChange,
+    setNodes
   } = useFlowStore(useShallow(selector));
- 
+
   const updateEditorContent = useCallback(() => {
     const newText = generateFlowText(nodes, edges);
     // vscode.postMessage({ command: 'updateEditorContent', newText });
@@ -53,35 +57,62 @@ export default function App() {
   useEffect(() => {
     updateEditorContent();
   }, [nodes, edges, updateEditorContent]);
-  
+
+  // TODO:後からdnd-kit関連は別のコンポーネントに移す
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragStart = (event: any) => {
+    console.log('drag start', event);
+  }
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = nodes.findIndex(node => node.id === active.id);
+      const newIndex = nodes.findIndex(node => node.id === over.id);
+      const newNodes = arrayMove(nodes, oldIndex, newIndex);
+      setNodes(newNodes);
+    }
+  };
+
+
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgeChange}
-        draggable={false}
-        edgesFocusable={false}
-        elevateEdgesOnSelect={false}
-        nodesConnectable={false}
-        nodesDraggable={false}
-        nodesFocusable={false}
-        selectNodesOnDrag={true}
-        selectionMode={SelectionMode.Partial}
-        elementsSelectable={true}
-        selectionOnDrag={true}
-        panOnScroll={true}
-        panOnScrollMode={PanOnScrollMode.Free}
-        fitView={false}
-        panOnDrag={[1,2]}
-      >
-        <Controls showInteractive={false}/>
-        <MiniMap/>
-      </ReactFlow>
-    </div>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <SortableContext items={nodes.map(node => node.id)}>
+        <div style={{ width: '100vw', height: '100vh' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgeChange}
+            draggable={false}
+            edgesFocusable={false}
+            elevateEdgesOnSelect={false}
+            nodesConnectable={false}
+            nodesDraggable={false}
+            nodesFocusable={false}
+            selectNodesOnDrag={true}
+            selectionMode={SelectionMode.Partial}
+            elementsSelectable={true}
+            selectionOnDrag={true}
+            panOnScroll={true}
+            panOnScrollMode={PanOnScrollMode.Free}
+            fitView={false}
+            panOnDrag={[1, 2]}
+          >
+            <Controls showInteractive={false} />
+            <MiniMap />
+          </ReactFlow>
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }
 
