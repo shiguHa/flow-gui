@@ -3,9 +3,7 @@ import {
     EdgeLabelRenderer,
     EdgeProps,
     getBezierPath,
-    useReactFlow,
   } from "@xyflow/react";
-import { getLayoutedElements } from "../utils/layout";
 import { useEffect, useState } from "react";
 import { FlowStoreType, useFlowStore } from "../store";
 import { useShallow } from "zustand/shallow";
@@ -17,8 +15,7 @@ const selector = (state: FlowStoreType) => ({
   getNodeById:state.getNodeById,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
-  addNode2: state.addNode,
-  getNodes: state.getNodes,
+  addNode: state.addNode,
 });
 
 export function ButtonEdgeWithAddNode({
@@ -34,8 +31,7 @@ export function ButtonEdgeWithAddNode({
   style = {},
   markerEnd,
 }: EdgeProps) {
-  const {   getNodeById, addNode2 } = useFlowStore(useShallow(selector));
-  const {getNodes,setNodes} = useReactFlow();
+  const {   getNodeById, addNode } = useFlowStore(useShallow(selector));
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -46,7 +42,7 @@ export function ButtonEdgeWithAddNode({
   });
   const [showOptions, setShowOptions] = useState(false);
 
-  const addNode = (type: string) => {
+  const addNodeHandle = (type: string) => {
     const sourceNode = getNodeById(source);
     const targetNode = getNodeById(target);
     if (!sourceNode || !targetNode) {
@@ -64,21 +60,7 @@ export function ButtonEdgeWithAddNode({
       type: type,
     };
     
-    addNode2(newNode,id,source,target);
-    // const currentNodes = getNodes();
-    // const updatedNodes = [...currentNodes, newNode];
-    // // const updatedNodes = [...useFlowStore.getState().nodes, newNode];
-
-    // const updatedEdges = [
-    //   ...edges.filter((edge) => edge.id !== id),
-    //   { id: `e-${sourceNode.id}-${newNodeId}`, source: sourceNode.id, target: newNodeId, type: "buttonedge" },
-    //   { id: `e-${newNodeId}-${targetNode.id}`, source: newNodeId, target: targetNode.id, type: "buttonedge" },
-    // ];
-
-    // const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(updatedNodes, updatedEdges);
-
-    // setNodes(layoutedNodes);
-    // setEdges(layoutedEdges);
+    addNode(newNode,id,source,target);
     setShowOptions(false);
   }
   
@@ -111,8 +93,8 @@ export function ButtonEdgeWithAddNode({
               zIndex: 10,
             }}
           >
-            <button onClick={() => addNode("default")}>通常ノード</button>
-            <button onClick={() => addNode("ifGroupNode")}>IFノード</button>
+            <button onClick={() => addNodeHandle("default")}>通常ノード</button>
+            <button onClick={() => addNodeHandle("ifGroupNode")}>IFノード</button>
           </div>
         )}
       </EdgeLabelRenderer>

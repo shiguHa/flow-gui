@@ -25,7 +25,6 @@ export type FlowStoreType = {
     setEdges: (edges: Edge[]) => void;
     deleteNode: (id: string) => void;
     deleteEdge: (id: string) => void;
-    getNodes: () => Node[];
     getNodeById: (id: string) => Node | undefined;
     setHiddenNodesByParentId: (parentId: string, hidden: boolean) => void;
     onNodesChange: OnNodesChange<Node>;
@@ -68,9 +67,6 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
     deleteEdge: (id) => {
         set({ edges: get().edges.filter((ed) => ed.id !== id) });
     },
-    getNodes: () => {
-        return get().nodes;
-    },
     getNodeById: (id) => {
         return get().nodes.find((nd) => nd.id === id);
     },
@@ -85,7 +81,6 @@ export const useFlowStore = create<FlowStoreType>((set, get) => ({
         });
     },
     onNodesChange: (changes) => {
-        console.log("onNodesChange", changes);
         set({
             nodes: applyNodeChanges(changes, get().nodes),
         });

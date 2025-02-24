@@ -3,6 +3,8 @@ import {
   ReactFlow,
   MiniMap,
   Controls,
+  SelectionMode,
+  PanOnScrollMode,
 } from '@xyflow/react';
  
 import '@xyflow/react/dist/style.css';
@@ -61,6 +63,20 @@ export default function App() {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgeChange}
+        draggable={false}
+        edgesFocusable={false}
+        elevateEdgesOnSelect={false}
+        nodesConnectable={false}
+        nodesDraggable={false}
+        nodesFocusable={false}
+        selectNodesOnDrag={true}
+        selectionMode={SelectionMode.Partial}
+        elementsSelectable={true}
+        selectionOnDrag={true}
+        panOnScroll={true}
+        panOnScrollMode={PanOnScrollMode.Free}
+        fitView={false}
+        panOnDrag={[1,2]}
       >
         <Controls showInteractive={false}/>
         <MiniMap/>
